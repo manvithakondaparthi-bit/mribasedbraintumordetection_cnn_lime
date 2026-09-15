@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroScan AI | Brain Tumor Detection</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <div class="logo-icon">+</div>
+            <span>NeuroScan AI</span>
+        </div>
+
+        <div class="nav-label">
+            CNN-Based MRI Analysis
+        </div>
+
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="badge">
+            AI-POWERED BRAIN MRI CLASSIFICATION
+        </div>
+
+        <h1>Brain Tumor Detection</h1>
+
+        <p>
+            Upload a brain MRI scan and let our CNN model classify
+            the image into one of four categories with an estimated
+            prediction confidence.
+        </p>
+
+    </section>
+
+
+    <!-- Main Content -->
+    <main class="container">
+
+
+        <!-- Upload Section -->
+        <div class="upload-card">
+
+            <div class="section-heading">
+                <span>01</span>
+                <h2>Upload MRI Image</h2>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <div class="upload-area">
+
+                    <div class="upload-icon">
+                        MRI
+                    </div>
+
+                    <h3>Upload Brain MRI</h3>
+
+                    <p>
+                        Select an MRI image in JPG, JPEG, or PNG format
+                    </p>
+
+                    <label for="image" class="choose-btn">
+                        Choose MRI Image
+                    </label>
+
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        class="file-input"
+                        accept="image/*"
+                        required
+                    >
+
+                    <img
+                        id="preview"
+                        class="image-preview"
+                        style="display: none;"
+                        alt="MRI Preview"
+                    >
+
+                </div>
+
+                <button type="submit" class="predict-btn">
+                    Analyze MRI
+                </button>
+
+            </form>
+
+        </div>
+
+
+        {% if prediction %}
+
+        <!-- Prediction Result -->
+        <div class="result-card">
+
+            <div class="section-heading">
+                <span>02</span>
+                <h2>Prediction Result</h2>
+            </div>
+
+            <div class="result-content">
+
+                <div class="result-label">
+                    CNN Classification
+                </div>
+
+                <h2 class="prediction-title">
+                    {{ prediction }}
+                </h2>
+
+                <div class="confidence">
+                    Prediction Confidence:
+                    <strong>
+                        {{ "%.2f"|format(confidence) }}%
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <!-- Disclaimer -->
+            <div class="disclaimer">
+                <strong>Important:</strong>
+                This application is developed for educational and
+                demonstration purposes only. It is not a medical
+                diagnostic tool and should not be used as a substitute
+                for professional medical advice.
+            </div>
+
+        </div>
+{% if lime_image_path %}
+
+<div class="lime-result">
+
+    <div class="section-heading">
+        <span>03</span>
+        <h2>LIME Explanation</h2>
+    </div>
+
+    <p class="lime-description">
+        View the regions that influenced the CNN model's prediction.
+    </p>
+
+    <button type="button"
+            class="lime-button"
+            onclick="toggleLime()">
+        View LIME Explanation
+    </button>
+
+    <div id="lime-container" class="lime-image-container" style="display: none;">
+
+        <img
+            src="{{ url_for('static', filename=lime_image_path) }}"
+            alt="LIME Explanation"
+            class="lime-image"
+        >
+
+    </div>
+
+</div>
+
+{% endif %}
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        Brain Tumor Detection Using CNN &amp; LIME - Mini Project
+    </footer>
+
+
+    <!-- Image Preview Script -->
+    <script>
+
+        document.getElementById("image").addEventListener(
+            "change",
+            function(event) {
+
+                const preview =
+                    document.getElementById("preview");
+
+                const file =
+                    event.target.files[0];
+
+                if (file) {
+
+                    preview.src =
+                        URL.createObjectURL(file);
+
+                    preview.style.display = "block";
+
+                }
+
+            }
+        );
+
+    </script>
+<script>
+    function toggleLime() {
+
+        const limeContainer =
+            document.getElementById("lime-container");
+
+        const button =
+            document.querySelector(".lime-button");
+
+        if (limeContainer.style.display === "none") {
+
+            limeContainer.style.display = "block";
+            button.textContent = "Hide LIME Explanation";
+
+        } else {
+
+            limeContainer.style.display = "none";
+            button.textContent = "View LIME Explanation";
+
+        }
+    }
+</script>
+</body>
+</html>
